@@ -2,4 +2,10 @@
     <string name="app_name">HuertoDomotico</string>
     <string name="tv_nombre">Nombre:</string>
     <string name="tv_titulo">EcoTerraX</string>
+    <string name="tv_id">Id</string>
+    <string name="tv_localizacion">Localización:</string>
+    <string name="tv_temp_amb">Temperatura Ambiente:</string>
+    <string name="tv_hum_amb">Humedad Ambiente:</string>
+    <string name="tv_temp_tierra">Humedad Tierra:</string>
+    <string name="tv_total_riegos">Total Riegos:</string>
 </resources>
