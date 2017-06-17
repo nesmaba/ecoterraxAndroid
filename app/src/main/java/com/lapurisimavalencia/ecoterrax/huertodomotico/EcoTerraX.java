@@ -31,8 +31,8 @@ public class EcoTerraX extends AppCompatActivity {
     private TextView tvTotalRiegosValor;
 
     // URL to get contacts JSON
-    private static String url = "http://api.androidhive.info/contacts/";
-
+    // private static String url = "http://api.androidhive.info/contacts/";
+    private static String url = "http://192.168.1.36/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
     ArrayList<HashMap<String, String>> listaHuertos;
 
     @Override
@@ -47,7 +47,8 @@ public class EcoTerraX extends AppCompatActivity {
         tvHumAmbValor = (TextView)findViewById(R.id.tvHumAmbValor);
         tvHumHuertoValor = (TextView)findViewById(R.id.tvHumHuertoValor);
         tvTotalRiegosValor = (TextView)findViewById(R.id.tvTotalRiegosValor);
-
+        GetHuertos getHuertos = new GetHuertos();
+        getHuertos.execute();
     }
 
     /**
@@ -87,16 +88,18 @@ public class EcoTerraX extends AppCompatActivity {
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
-
+                    String huertoJson = jsonObj.getString("huerto");
                     // Getting JSON Array node. Por si tenemos varios huertos.
-                    JSONArray huertos = jsonObj.getJSONArray("huertos");
-
+                    //JSONArray huertos = jsonObj.getJSONArray("huerto");
+                    //Log.e(TAG, " AQUI:"+huertos);
                     // looping through All Contacts
-                    for (int i = 0; i < huertos.length(); i++) {
+                    //for (int i = 0; i < huertos.length(); i++) {
 
-                        JSONObject h = huertos.getJSONObject(i);
+                        JSONObject h = new JSONObject(huertoJson);
 
-                        idHuerto = h.getString("idHuerto");
+                        //idHuerto = h.getString("idHuerto");
+
+                        //Log.e(TAG, " AQUI:"+huer);
                         nombre = h.getString("nombre");
                         localizacion = h.getString("localizacion");
                         descripcion = h.getString("descripcion");
@@ -119,8 +122,9 @@ public class EcoTerraX extends AppCompatActivity {
                         huerto.put("totalRiegos", totalRiegos);
 
                         // adding contact to contact list
-                        listaHuertos.add(huerto);
-                    }
+                        //listaHuertos.add(huerto);
+
+                    //}
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
