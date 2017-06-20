@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HuertoDomotico</string>
+    <string name="app_name">EcoTerraX</string>
     <string name="tv_nombre">Nombre:</string>
     <string name="tv_titulo">EcoTerraX</string>
     <string name="tv_id">Id</string>

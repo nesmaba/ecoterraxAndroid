@@ -2,9 +2,11 @@ package com.lapurisimavalencia.ecoterrax.huertodomotico;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class EcoTerraX extends AppCompatActivity {
@@ -32,7 +36,12 @@ public class EcoTerraX extends AppCompatActivity {
 
     // URL to get contacts JSON
     // private static String url = "http://api.androidhive.info/contacts/";
-    private static String url = "http://192.168.1.36/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
+    // URL wifi de casa
+    //private static String url = "http://192.168.1.36/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
+
+    // URL wifi de Colegio La Purísima Valencia
+    private static String url = "http://10.10.64.121/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
+
     ArrayList<HashMap<String, String>> listaHuertos;
 
     @Override
@@ -40,21 +49,47 @@ public class EcoTerraX extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eco_terra_x);
 
-        tvIdHuertoValor = (TextView)findViewById(R.id.tvIdHuertoValor);
-        tvNombreValor = (TextView)findViewById(R.id.tvNombreValor);
-        tvLocalizacionValor = (TextView)findViewById(R.id.tvLocalizacionValor);
-        tvTempAmbValor = (TextView)findViewById(R.id.tvTempAmbValor);
-        tvHumAmbValor = (TextView)findViewById(R.id.tvHumAmbValor);
-        tvHumHuertoValor = (TextView)findViewById(R.id.tvHumHuertoValor);
-        tvTotalRiegosValor = (TextView)findViewById(R.id.tvTotalRiegosValor);
-        GetHuertos getHuertos = new GetHuertos();
-        getHuertos.execute();
+        tvIdHuertoValor = (TextView) findViewById(R.id.tvIdHuertoValor);
+        tvNombreValor = (TextView) findViewById(R.id.tvNombreValor);
+        tvLocalizacionValor = (TextView) findViewById(R.id.tvLocalizacionValor);
+        tvTempAmbValor = (TextView) findViewById(R.id.tvTempAmbValor);
+        tvHumAmbValor = (TextView) findViewById(R.id.tvHumAmbValor);
+        tvHumHuertoValor = (TextView) findViewById(R.id.tvHumHuertoValor);
+        tvTotalRiegosValor = (TextView) findViewById(R.id.tvTotalRiegosValor);
+        setRepeatingAsyncTask();
+
+    }
+
+
+    private void setRepeatingAsyncTask() {
+
+        final Handler handler = new Handler();
+        Timer timer = new Timer();
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        try {
+                            AsyncTaskGetHuertos jsonTask = new AsyncTaskGetHuertos();
+                            jsonTask.execute();
+                        } catch (Exception e) {
+                            // error, do something
+                        }
+                    }
+                });
+            }
+        };
+
+        timer.schedule(task, 0, 5*1000);  // interval of 30 seconds
+
     }
 
     /**
      * Async task class to get json by making HTTP call
      */
-    private class GetHuertos extends AsyncTask<Void, Void, Void> {
+    private class AsyncTaskGetHuertos extends AsyncTask<Void, Void, Void> {
 
         String idHuerto;
         String nombre;
@@ -69,6 +104,7 @@ public class EcoTerraX extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             // Showing progress dialog
+
             pDialog = new ProgressDialog(EcoTerraX.this);
             pDialog.setMessage("Espere por favor...");
             pDialog.setCancelable(false);
@@ -97,7 +133,7 @@ public class EcoTerraX extends AppCompatActivity {
 
                         JSONObject h = new JSONObject(huertoJson);
 
-                        //idHuerto = h.getString("idHuerto");
+                        idHuerto = h.getString("idHuerto");
 
                         //Log.e(TAG, " AQUI:"+huer);
                         nombre = h.getString("nombre");
@@ -168,8 +204,8 @@ public class EcoTerraX extends AppCompatActivity {
             tvIdHuertoValor.setText(idHuerto);
             tvNombreValor.setText(nombre);
             tvLocalizacionValor.setText(localizacion);
-            tvTempAmbValor.setText(tempAmbiente);
-            tvHumAmbValor.setText(humAmbiente);
+            tvTempAmbValor.setText(tempAmbiente+"ºC");
+            tvHumAmbValor.setText(humAmbiente+"%");
             tvHumHuertoValor.setText(humHuerto);
             tvTotalRiegosValor.setText(totalRiegos);
 
