@@ -81,8 +81,8 @@ public class EcoTerraX extends AppCompatActivity {
                 });
             }
         };
-
-        timer.schedule(task, 0, 5*1000);  // interval of 30 seconds
+        // Actualizamos cada minuto ya que el tiempo mínimo de refresco del script en python es cada 60 segundos
+        timer.schedule(task, 0, 60*1000);  // interval of 60 seconds
 
     }
 
