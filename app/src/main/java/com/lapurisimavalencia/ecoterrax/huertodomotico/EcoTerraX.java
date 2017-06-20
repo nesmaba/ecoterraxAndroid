@@ -1,12 +1,16 @@
 package com.lapurisimavalencia.ecoterrax.huertodomotico;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +30,15 @@ public class EcoTerraX extends AppCompatActivity {
 
     private String TAG = EcoTerraX.class.getSimpleName(); // Para identificar los errores en el LOG
     private ProgressDialog pDialog;
+    private Button btConectar;
+    private EditText etServidor;
     private TextView tvIdHuertoValor;
     private TextView tvNombreValor;
     private TextView tvLocalizacionValor;
     private TextView tvTempAmbValor;
     private TextView tvHumAmbValor;
     private TextView tvHumHuertoValor;
+    private TextView tvEstadoHuertoValor;
     private TextView tvTotalRiegosValor;
 
     // URL to get contacts JSON
@@ -40,7 +47,7 @@ public class EcoTerraX extends AppCompatActivity {
     //private static String url = "http://192.168.1.36/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
 
     // URL wifi de Colegio La Purísima Valencia
-    private static String url = "http://10.10.64.121/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
+    private static String url;
 
     ArrayList<HashMap<String, String>> listaHuertos;
 
@@ -49,14 +56,32 @@ public class EcoTerraX extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eco_terra_x);
 
+        btConectar = (Button) findViewById(R.id.btConectarServidor);
+        etServidor = (EditText) findViewById(R.id.etIpServidorValor);
         tvIdHuertoValor = (TextView) findViewById(R.id.tvIdHuertoValor);
         tvNombreValor = (TextView) findViewById(R.id.tvNombreValor);
         tvLocalizacionValor = (TextView) findViewById(R.id.tvLocalizacionValor);
         tvTempAmbValor = (TextView) findViewById(R.id.tvTempAmbValor);
         tvHumAmbValor = (TextView) findViewById(R.id.tvHumAmbValor);
         tvHumHuertoValor = (TextView) findViewById(R.id.tvHumHuertoValor);
+        tvEstadoHuertoValor = (TextView) findViewById(R.id.tvEstadoHuertoValor);
         tvTotalRiegosValor = (TextView) findViewById(R.id.tvTotalRiegosValor);
-        setRepeatingAsyncTask();
+
+        btConectar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(etServidor.getText().toString().isEmpty())
+                    Toast.makeText(getApplicationContext(), "Error al conectar con el servidor",Toast.LENGTH_LONG).show();
+                else{
+                    etServidor.clearFocus();
+                    String ip = etServidor.getText().toString();
+                    url= "http://"+ip+"/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
+                    setRepeatingAsyncTask();
+                }
+
+            }
+        });
 
     }
 
@@ -206,6 +231,20 @@ public class EcoTerraX extends AppCompatActivity {
             tvLocalizacionValor.setText(localizacion);
             tvTempAmbValor.setText(tempAmbiente+"ºC");
             tvHumAmbValor.setText(humAmbiente+"%");
+
+            if(Integer.parseInt(humHuerto)<=250) {
+                tvHumHuertoValor.setBackgroundColor(Color.RED);
+                tvEstadoHuertoValor.setBackgroundColor(Color.RED);
+                tvEstadoHuertoValor.setText("Me ahogo!!!");
+            }else if(Integer.parseInt(humHuerto)>600){
+                tvHumHuertoValor.setBackgroundColor(Color.RED);
+                tvEstadoHuertoValor.setBackgroundColor(Color.RED);
+                tvEstadoHuertoValor.setText("Necesito agua!!!");
+            }else {
+                tvHumHuertoValor.setBackgroundColor(Color.GREEN);
+                tvEstadoHuertoValor.setBackgroundColor(Color.GREEN);
+                tvEstadoHuertoValor.setText("Estoy bien!!!");
+            }
             tvHumHuertoValor.setText(humHuerto);
             tvTotalRiegosValor.setText(totalRiegos);
 

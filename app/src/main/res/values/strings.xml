@@ -8,4 +8,7 @@
     <string name="tv_hum_amb">Humedad Ambiente:</string>
     <string name="tv_temp_tierra">Humedad Tierra:</string>
     <string name="tv_total_riegos">Total Riegos:</string>
+    <string name="tv_estado_huerto">Estado Huerto:</string>
+    <string name="ip_webservice">IP del Servidor</string>
+    <string name="conectar_servidor">Conectar</string>
 </resources>
