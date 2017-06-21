@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import com.lapurisimavalencia.ecoterrax.huertodomotico.Modelo.HttpHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,11 +22,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Pattern;
 
 
 public class EcoTerraX extends AppCompatActivity {
 
     private String TAG = EcoTerraX.class.getSimpleName(); // Para identificar los errores en el LOG
+    private static final Pattern PATTERN = Pattern.compile(
+            "^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+
     private ProgressDialog pDialog;
     private Button btConectar;
     private EditText etServidor;
@@ -40,6 +42,9 @@ public class EcoTerraX extends AppCompatActivity {
     private TextView tvHumHuertoValor;
     private TextView tvEstadoHuertoValor;
     private TextView tvTotalRiegosValor;
+    AsyncTaskGetHuertos jsonTask;
+    Timer timer;
+    TimerTask task;
 
     // URL to get contacts JSON
     // private static String url = "http://api.androidhive.info/contacts/";
@@ -76,8 +81,11 @@ public class EcoTerraX extends AppCompatActivity {
                 else{
                     etServidor.clearFocus();
                     String ip = etServidor.getText().toString();
-                    url= "http://"+ip+"/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
-                    setRepeatingAsyncTask();
+                    if(EcoTerraX.validate(ip)) {
+                        url = "http://" + ip + "/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
+                        setRepeatingAsyncTask();
+                    }else
+                        Toast.makeText(getApplicationContext(), "ERROR: Dirección IP del servidor incorrecta.",Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -85,22 +93,26 @@ public class EcoTerraX extends AppCompatActivity {
 
     }
 
+    public static boolean validate(final String ip) {
+        return PATTERN.matcher(ip).matches();
+    }
 
     private void setRepeatingAsyncTask() {
 
         final Handler handler = new Handler();
-        Timer timer = new Timer();
+        timer = new Timer();
 
-        TimerTask task = new TimerTask() {
+        task = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
                         try {
-                            AsyncTaskGetHuertos jsonTask = new AsyncTaskGetHuertos();
+                            jsonTask = new AsyncTaskGetHuertos();
                             jsonTask.execute();
                         } catch (Exception e) {
                             // error, do something
+                            Toast.makeText(getApplicationContext(), "ERROR al conectar con el servidor: "+e.toString(),Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -259,5 +271,18 @@ public class EcoTerraX extends AppCompatActivity {
             */
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        // Finalizamos todas las tareas en segundo plano.
+        if(jsonTask!=null)
+            jsonTask.cancel(true);
+        if(timer!=null)
+            timer.cancel();
+        if(task!=null)
+            task.cancel();
+        this.finish();
     }
 }
