@@ -82,7 +82,7 @@ public class EcoTerraX extends AppCompatActivity {
                     etServidor.clearFocus();
                     String ip = etServidor.getText().toString();
                     if(EcoTerraX.validate(ip)) {
-                        url = "http://" + ip + "/ecoterrax/modelo/obtenerDetalleHuerto.php?idHuerto=2";
+                        url = "http://" + ip + "/ecoterrax/Modelo/obtenerDetalleMedicion.php?idHuerto=1";
                         setRepeatingAsyncTask();
                     }else
                         Toast.makeText(getApplicationContext(), "ERROR: Dirección IP del servidor incorrecta.",Toast.LENGTH_LONG).show();
@@ -135,7 +135,9 @@ public class EcoTerraX extends AppCompatActivity {
         String tempAmbiente;
         String humAmbiente;
         String humHuerto;
-        String totalRiegos;
+        String fecha;
+        String hora;
+        String esRegado;
 
         @Override
         protected void onPreExecute() {
@@ -161,7 +163,9 @@ public class EcoTerraX extends AppCompatActivity {
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
-                    String huertoJson = jsonObj.getString("huerto");
+                    // Primero tenemos dos campos: estado y medicion
+                    // Por eso recuperamos la tupla de medicion
+                    String huertoJson = jsonObj.getString("medicion");
                     // Getting JSON Array node. Por si tenemos varios huertos.
                     //JSONArray huertos = jsonObj.getJSONArray("huerto");
                     //Log.e(TAG, " AQUI:"+huertos);
@@ -173,13 +177,14 @@ public class EcoTerraX extends AppCompatActivity {
                         idHuerto = h.getString("idHuerto");
 
                         //Log.e(TAG, " AQUI:"+huer);
-                        nombre = h.getString("nombre");
-                        localizacion = h.getString("localizacion");
-                        descripcion = h.getString("descripcion");
-                        tempAmbiente = h.getString("temperatura_ambiente");
-                        humAmbiente = h.getString("humedad_ambiente");
-                        humHuerto = h.getString("humedad_huerto");
-                        totalRiegos = h.getString("total_riegos");
+                        nombre = "La Purísima Valencia";
+                        localizacion = "Valencia";
+                        tempAmbiente = h.getString("tempAmb");
+                        humAmbiente = h.getString("humAmb");
+                        humHuerto = h.getString("humTierra");
+                        fecha = h.getString("fecha");
+                        hora = h.getString("hora");
+                        esRegado = h.getString("esRegado");
 
                         // tmp hash map for single contact
                         HashMap<String, String> huerto = new HashMap<>();
@@ -188,11 +193,12 @@ public class EcoTerraX extends AppCompatActivity {
                         huerto.put("id", idHuerto);
                         huerto.put("nombre", nombre);
                         huerto.put("localizacion", localizacion);
-                        huerto.put("descripcion", descripcion);
                         huerto.put("tempAmbiente", tempAmbiente);
                         huerto.put("humAmbiente", humAmbiente);
                         huerto.put("humHuerto", humHuerto);
-                        huerto.put("totalRiegos", totalRiegos);
+                        huerto.put("fecha", fecha);
+                        huerto.put("hora", hora);
+                        huerto.put("esRegado", esRegado);
 
                         // adding contact to contact list
                         //listaHuertos.add(huerto);
@@ -258,7 +264,6 @@ public class EcoTerraX extends AppCompatActivity {
                 tvEstadoHuertoValor.setText("Estoy bien!!!");
             }
             tvHumHuertoValor.setText(humHuerto);
-            tvTotalRiegosValor.setText(totalRiegos);
 
             /*
             ListAdapter adapter = new SimpleAdapter(

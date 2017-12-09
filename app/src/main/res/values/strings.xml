@@ -2,13 +2,15 @@
     <string name="app_name">EcoTerraX</string>
     <string name="tv_nombre">Nombre:</string>
     <string name="tv_titulo">EcoTerraX</string>
-    <string name="tv_id">Id</string>
+    <string name="tv_id">Id Huerto:</string>
     <string name="tv_localizacion">Localización:</string>
     <string name="tv_temp_amb">Temperatura Ambiente:</string>
     <string name="tv_hum_amb">Humedad Ambiente:</string>
     <string name="tv_temp_tierra">Humedad Tierra:</string>
-    <string name="tv_total_riegos">Total Riegos:</string>
     <string name="tv_estado_huerto">Estado Huerto:</string>
     <string name="ip_webservice">IP del Servidor</string>
     <string name="conectar_servidor">Conectar</string>
+    <string name="tvEsRegado">¿Se ha regado?</string>
+    <string name="tvFecha">Fecha Medición:</string>
+    <string name="tvHora">Hora Medición:</string>
 </resources>
