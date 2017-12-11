@@ -41,7 +41,10 @@ public class EcoTerraX extends AppCompatActivity {
     private TextView tvHumAmbValor;
     private TextView tvHumHuertoValor;
     private TextView tvEstadoHuertoValor;
-    private TextView tvTotalRiegosValor;
+    private TextView tvFechaMedicionValor;
+    private TextView tvHoraMedicionValor;
+    private TextView tvEsRegadoValor;
+
     AsyncTaskGetHuertos jsonTask;
     Timer timer;
     TimerTask task;
@@ -55,6 +58,8 @@ public class EcoTerraX extends AppCompatActivity {
     private static String url;
 
     ArrayList<HashMap<String, String>> listaHuertos;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +75,9 @@ public class EcoTerraX extends AppCompatActivity {
         tvHumAmbValor = (TextView) findViewById(R.id.tvHumAmbValor);
         tvHumHuertoValor = (TextView) findViewById(R.id.tvHumHuertoValor);
         tvEstadoHuertoValor = (TextView) findViewById(R.id.tvEstadoHuertoValor);
-        tvTotalRiegosValor = (TextView) findViewById(R.id.tvTotalRiegosValor);
+        tvFechaMedicionValor = (TextView) findViewById(R.id.tvFechaValor);
+        tvHoraMedicionValor = (TextView) findViewById(R.id.tvHoraValor);
+        tvEsRegadoValor = (TextView) findViewById(R.id.tvEsRegadoValor);
 
         btConectar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +138,6 @@ public class EcoTerraX extends AppCompatActivity {
         String idHuerto;
         String nombre;
         String localizacion;
-        String descripcion;
         String tempAmbiente;
         String humAmbiente;
         String humHuerto;
@@ -175,6 +181,7 @@ public class EcoTerraX extends AppCompatActivity {
                         JSONObject h = new JSONObject(huertoJson);
 
                         idHuerto = h.getString("idHuerto");
+                        //idHuerto = "1";
 
                         //Log.e(TAG, " AQUI:"+huer);
                         nombre = "La Purísima Valencia";
@@ -264,6 +271,9 @@ public class EcoTerraX extends AppCompatActivity {
                 tvEstadoHuertoValor.setText("Estoy bien!!!");
             }
             tvHumHuertoValor.setText(humHuerto);
+            tvFechaMedicionValor.setText(fecha);
+            tvHoraMedicionValor.setText(hora);
+            tvEsRegadoValor.setText(esRegado);
 
             /*
             ListAdapter adapter = new SimpleAdapter(
